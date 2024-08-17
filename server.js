@@ -39,9 +39,6 @@ app.get('/api/scrape', async (req, res) => {
 
   const apiUrl = `https://www.musixmatch.com/lyrics/${artist}/${song}`;
 
-  console.log("scraping")
-  console.log(song + ", " + artist);
-
   try {
     const page = await fetch(apiUrl, {
       method: "GET",
@@ -61,7 +58,6 @@ app.get('/api/scrape', async (req, res) => {
     for (let lyric of lyrics) {
       finalLyrics += `${lyric}\n`;
     }
-    console.log(finalLyrics);
     return res.json({ lyrics: finalLyrics });
   } catch (error) {
     console.error(`catch clause error in server: ${error}`);
