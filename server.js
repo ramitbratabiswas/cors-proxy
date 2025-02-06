@@ -38,6 +38,7 @@ app.get('/api/scrape', async (req, res) => {
   const { song, artist } = req.query;
 
   const apiUrl = `https://www.musixmatch.com/lyrics/${artist}/${song}`;
+  // const apiUrl = `https://www.musixmatch.com/lyrics/kanye-west/stronger`;
 
   try {
     const page = await fetch(apiUrl, {
@@ -52,11 +53,14 @@ app.get('/api/scrape', async (req, res) => {
     const body = await page.text();
     const $ = await cheerio.load(body);
 
-    const $lyrics = $('.r-ueyrd6');
+    const $lyrics = $('.css-146c3p1.r-1inkyih.r-11rrj2j.r-13awgt0');
+    // console.log($lyrics);
     const lyrics = $lyrics.map((i, e) => $(e).text().toString());
+    // console.log(lyrics, lyrics.length);
     let finalLyrics = "";
     for (let lyric of lyrics) {
       finalLyrics += `${lyric}\n`;
+      // console.log(lyric);
     }
     return res.json({ lyrics: finalLyrics });
   } catch (error) {
