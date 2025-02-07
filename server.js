@@ -38,7 +38,6 @@ app.get('/api/scrape', async (req, res) => {
   const { song, artist } = req.query;
 
   const apiUrl = `https://www.musixmatch.com/lyrics/${artist}/${song}`;
-  // const apiUrl = `https://www.musixmatch.com/lyrics/kanye-west/stronger`;
 
   try {
     const page = await fetch(apiUrl, {
@@ -53,14 +52,15 @@ app.get('/api/scrape', async (req, res) => {
     const body = await page.text();
     const $ = await cheerio.load(body);
 
-    const $lyrics = $('.css-146c3p1.r-1inkyih.r-11rrj2j.r-13awgt0');
-    // console.log($lyrics);
-    const lyrics = $lyrics.map((i, e) => $(e).text().toString());
-    // console.log(lyrics, lyrics.length);
+    const $lyrics = $('.css-146c3p1.r-1inkyih.r-11rrj2j.r-13awgt0, .css-146c3p1.r-fdjqy7.r-a023e6.r-1kfrs79.r-1cwl3u0.r-pkx7oh.r-tz2msa.r-1upy0dh.r-5oul0u');
+    const lyrics = $lyrics.map((index, element) => { 
+      const classList = $(element).attr('class');
+      const textContent = (classList.includes("r-1cwl3u0")) ? " " : $(element).text().trim();
+      return textContent.toString();
+    });
     let finalLyrics = "";
     for (let lyric of lyrics) {
       finalLyrics += `${lyric}\n`;
-      // console.log(lyric);
     }
     return res.json({ lyrics: finalLyrics });
   } catch (error) {
